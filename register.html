@@ -218,7 +218,13 @@
     const originalBtnText = submitBtn.textContent;
 
     function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      // More robust email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email) && email.length <= 254 && email.length >= 3;
+    }
+
+    function validatePassword(password) {
+      return typeof password === 'string' && password.length >= 8 && password.length <= 128;
     }
 
     function showError(message) {
@@ -279,9 +285,9 @@
         return;
       }
 
-      if (password.length < 8) {
+      if (!validatePassword(password)) {
         passwordEl.classList.add("input-error");
-        showError("Password must be at least 8 characters");
+        showError("Password must be between 8 and 128 characters");
         passwordEl.focus();
         return;
       }

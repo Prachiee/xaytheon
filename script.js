@@ -793,8 +793,26 @@ function initGithubDashboard() {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const username = usernameInput.value.trim();
+
+    // Validate username presence
     if (!username) {
       setStatus("Please enter a GitHub username.", "error");
+      usernameInput.focus();
+      return;
+    }
+
+    // Validate username format (GitHub username rules)
+    const usernameRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$/;
+    if (!usernameRegex.test(username)) {
+      setStatus("Please enter a valid GitHub username (alphanumeric characters and hyphens only).", "error");
+      usernameInput.focus();
+      return;
+    }
+
+    // Validate username length
+    if (username.length < 1 || username.length > 39) {
+      setStatus("GitHub username must be between 1 and 39 characters.", "error");
+      usernameInput.focus();
       return;
     }
     
