@@ -172,20 +172,56 @@
   }
 
   async function login(email, password) {
+    // Input validation
+    if (!email || typeof email !== 'string' || !password || typeof password !== 'string') {
+      throw new Error('Email and password are required');
+    }
+
+    if (email.length > 254 || password.length > 128) {
+      throw new Error('Input data too long');
+    }
+
+    if (email.length < 3 || password.length < 8) {
+      throw new Error('Input data too short');
+    }
+
     try {
       const res = await fetchWithTimeout(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Login failed");
+        let errorMessage = "Login failed";
+        try {
+          const err = await res.json();
+          errorMessage = err.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status text
+          errorMessage = res.statusText || errorMessage;
+        }
+
+        // Handle specific HTTP status codes
+        if (res.status === 429) {
+          throw new Error('Too many login attempts. Please wait before trying again.');
+        } else if (res.status === 401) {
+          throw new Error('Invalid email or password');
+        } else if (res.status >= 500) {
+          throw new Error('Server error. Please try again later.');
+        }
+
+        throw new Error(errorMessage);
       }
 
       const data = await res.json();
+
+      // Validate response data
+      if (!data.accessToken || !data.user) {
+        throw new Error('Invalid response from server');
+      }
+
       setAccessToken(data.accessToken, data.expiresIn, data.user);
 
       if (data.refreshToken) {
@@ -198,34 +234,67 @@
       if (err.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection.');
       }
-      if (err.message.includes('Failed to fetch')) {
+      if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
         throw new Error('Network error. Please check your connection.');
       }
+      // Re-throw the original error if it's already user-friendly
       throw err;
     }
   }
 
   async function register(email, password) {
+    // Input validation
+    if (!email || typeof email !== 'string' || !password || typeof password !== 'string') {
+      throw new Error('Email and password are required');
+    }
+
+    if (email.length > 254 || password.length > 128) {
+      throw new Error('Input data too long');
+    }
+
+    if (email.length < 3 || password.length < 8) {
+      throw new Error('Input data too short');
+    }
+
     try {
       const res = await fetchWithTimeout(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Registration failed");
+        let errorMessage = "Registration failed";
+        try {
+          const err = await res.json();
+          errorMessage = err.message || errorMessage;
+        } catch {
+          // If we can't parse the error response, use status text
+          errorMessage = res.statusText || errorMessage;
+        }
+
+        // Handle specific HTTP status codes
+        if (res.status === 409) {
+          throw new Error('An account with this email already exists');
+        } else if (res.status === 429) {
+          throw new Error('Too many registration attempts. Please wait before trying again.');
+        } else if (res.status >= 500) {
+          throw new Error('Server error. Please try again later.');
+        }
+
+        throw new Error(errorMessage);
       }
 
-      return res.json();
+      const data = await res.json();
+      return data;
     } catch (err) {
       if (err.message.includes('timeout')) {
         throw new Error('Request timeout. Please check your connection.');
       }
-      if (err.message.includes('Failed to fetch')) {
+      if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
         throw new Error('Network error. Please check your connection.');
       }
+      // Re-throw the original error if it's already user-friendly
       throw err;
     }
   }
@@ -303,29 +372,38 @@
       .forEach((el) => (el.style.display = authed ? "none" : ""));
   }
 
-  function enforceHttps() {
-    if (window.location.protocol !== "https:" &&
-      window.location.hostname !== "localhost" &&
-      window.location.hostname !== "127.0.0.1") {
-      // In production, redirect to HTTPS
-      if (process.env.NODE_ENV === "production") {
-        window.location.protocol = "https:";
-      } else {
-        console.warn("⚠️ WARNING: Using HTTP in non-local environment. Switch to HTTPS for security.");
-      }
-    }
+  // Login with email + password
+  async function login(email, password){
+    const c = ensureClient();
+    if (!c) throw new Error('Supabase not available');
+    const { data, error } = await c.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data;
   }
 
-  window.XAYTHEON_AUTH = {
-    login,
-    register,
-    logout,
-    isAuthenticated,
-    authenticatedFetch,
-    refreshAccessToken,
-    getSession,
-    ensureClient: () => null
-  };
+  // Sign up with email + password
+  async function signup(email, password){
+    const c = ensureClient();
+    if (!c) throw new Error('Supabase not available');
+    const { data, error } = await c.auth.signUp({ email, password });
+    if (error) throw error;
+    return data;
+  }
+
+  // Expose a helper for login page to trigger magic link
+  async function sendMagicLink(email){
+    const c = ensureClient();
+    if (!c) throw new Error('Supabase not available');
+    const redirectTo = computeRedirectTo();
+    const { error } = await c.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: redirectTo }
+    });
+    if (error) throw error;
+    return true;
+  }
+
+  window.XAYTHEON_AUTH = { ensureClient, getSession, handleAuthState, sendMagicLink, login, signup };
 
   window.addEventListener("DOMContentLoaded", async () => {
     enforceHttps();
@@ -337,4 +415,83 @@
   window.addEventListener("beforeunload", () => {
     // Tokens cleared automatically on page close
   });
+
+  // Ensure XAYTHEON_AUTH exists
+window.XAYTHEON_AUTH = window.XAYTHEON_AUTH || {};
+
+/**
+ * Request password reset (forgot password)
+ * @param {string} email - User's email address
+ */
+window.XAYTHEON_AUTH.forgotPassword = async function(email) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/forgot-password`, {  
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to send reset email");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    throw error;
+  }
+};
+
+/**
+ * Reset password using token
+ * @param {string} token - Reset token from email
+ * @param {string} newPassword - New password
+ */
+window.XAYTHEON_AUTH.resetPassword = async function(token, newPassword) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, newPassword }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to reset password");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Reset password error:", error);
+    throw error;
+  }
+};
+
+/**
+ * Validate reset token
+ * @param {string} token - Reset token to validate
+ */
+window.XAYTHEON_AUTH.validateResetToken = async function(token) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/validate-reset-token?token=${encodeURIComponent(token)}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.valid) {
+      throw new Error(data.message || "Invalid token");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Validate token error:", error);
+    throw error;
+  }
+};
+
 })();
