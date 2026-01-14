@@ -5,26 +5,15 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
-const { handleValidationError } = require("./utils/validation");
+const watchlistRoutes = require("./routes/watchlist.routes");
+const notificationRoutes = require("./routes/notification.routes");
+const analyticsRoutes = require("./routes/analytics.routes");
+const achievementsRoutes = require("./routes/achievements.routes");
 
 const app = express();
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, or file://)
-    if (!origin) return callback(null, true);
-
-    // Allow any localhost origin
-    if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
-      return callback(null, true);
-    }
-
-    if (origin === process.env.FRONTEND_URL) {
-      return callback(null, true);
-    }
-
-    callback(new Error('Not allowed by CORS'));
-  },
+  origin: true, // Allow all origins (simpler for local dev with varying ports)
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -73,7 +62,7 @@ app.use((req, res, next) => {
 app.use(cors(corsOptions));
 
 // Body parsing with size limits and error handling
-app.use(express.json({ 
+app.use(express.json({
   limit: '10mb',
   verify: (req, res, buf) => {
     try {
@@ -102,9 +91,10 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
-
-// Global error handling middleware
-app.use(handleValidationError);
+app.use("/api/watchlists", watchlistRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/achievements", achievementsRoutes);
 
 app.use((err, req, res, next) => {
   console.error("Error:", err);

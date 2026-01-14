@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,6 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
   <script defer src="auth.js"></script>
 </head>
+
 <body class="eightgon-page">
   <div class="content">
     <nav class="navbar">
@@ -19,21 +21,25 @@
         </a>
         <ul class="nav-menu">
           <li><a class="nav-link" href="index.html#home">Home</a></li>
+          <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
+          <li><a class="nav-link" href="analytics.html">Analytics</a></li>
+          <li><a class="nav-link" href="watchlist.html">Watchlist</a></li>
+          <li><a class="nav-link" href="achievements.html">Achievements</a></li>
           <li><a class="nav-link" href="community.html">Community Highlights</a></li>
           <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
-          <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
           <li>
             <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-              <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="5"/>
-                <line x1="12" y1="1" x2="12" y2="3"/>
-                <line x1="12" y1="21" x2="12" y2="23"/>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                <line x1="1" y1="12" x2="3" y2="12"/>
-                <line x1="21" y1="12" x2="23" y2="12"/>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
               </svg>
             </button>
           </li>
@@ -47,13 +53,22 @@
         <div class="container">
           <h2 class="section-title" style="font-family:'Eightgon',sans-serif;">Your Open Source Contributions</h2>
 
+          <!-- Profile Avatar (Fallback) -->
+          <div class="profile-header" style="margin:15px 0; display:flex; align-items:center; gap:12px;">
+            <img src="assets/avatar-default.png" alt="User Avatar" class="profile-avatar"
+              style="width:70px;height:70px;border-radius:50%;object-fit:cover;" />
+            <span class="muted">Your Profile</span>
+          </div>
+
           <div data-requires-guest class="muted" style="margin-top:10px;">
             Please <a href="login.html">sign in</a> to add and view your contributions.
           </div>
 
           <section id="user-contrib" data-requires-auth style="display:none; margin-top:10px;">
             <div class="card" style="grid-column: 1 / -1;">
-              <div class="card-header"><h3>Manage Contributions</h3></div>
+              <div class="card-header">
+                <h3>Manage Contributions</h3>
+              </div>
               <div class="card-body">
                 <form id="contrib-form" class="github-form" autocomplete="off" style="margin-bottom:20px;">
                   <div class="field-group" style="grid-column: span 4;">
@@ -95,45 +110,35 @@
                 <div id="contrib-list" class="repo-list"></div>
               </div>
             </div>
+          </section> <!-- Properly close user-contrib section -->
 
-          </div>
-        </section>
-      </div>
-    </section>
-    
-    <div class="cursor-container">
-      <span class="cursor-dot"></span>
-      <span class="cursor-dot"></span>
-      <span class="cursor-dot"></span>
-      <span class="cursor-dot"></span>
-      <span class="cursor-dot"></span>
-      <span class="cursor-dot"></span>
-      <span class="cursor-dot"></span>
-      <span class="cursor-dot"></span>
-    </div>
-
-          </section>
+          <footer class="footer">
+            <div class="container">
+              <div class="footer-content">
+                <div class="footer-brand">
+                  <span class="logo-text">XAYTHEON</span>
+                  <p>Empowering the next generation of innovators</p>
+                </div>
+              </div>
+              <div class="footer-bottom">
+                <p>&copy; 2026 XAYTHEON. All rights reserved.</p>
+              </div>
+            </div>
+          </footer>
         </div>
-      </section>
-    </main>
- 
-
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <span class="logo-text">XAYTHEON</span>
-            <p>Empowering the next generation of innovators</p>
-          </div>
+        <div class="cursor-container">
+          <span class="cursor-dot"></span>
+          <span class="cursor-dot"></span>
+          <span class="cursor-dot"></span>
+          <span class="cursor-dot"></span>
+          <span class="cursor-dot"></span>
+          <span class="cursor-dot"></span>
+          <span class="cursor-dot"></span>
+          <span class="cursor-dot"></span>
         </div>
-        <div class="footer-bottom">
-          <p>&copy; 2026 XAYTHEON. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-  </div>
 
-  <script src="contributions.js"></script>
-  <script src="script.js"></script>
+        <script src="contributions.js"></script>
+        <script src="script.js"></script>
 </body>
+
 </html>
