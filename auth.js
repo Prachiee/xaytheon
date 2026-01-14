@@ -30,13 +30,25 @@
   let tokenExpiryTime = null;
   let refreshTimer = null;
 
+  function isTokenExpired() {
+  if (!tokenExpiryTime) return true;
+  return Date.now() >= tokenExpiryTime;
+}
+
+
   function setAccessToken(token, expiresIn, user) {
-    accessToken = token;
-    if (user) currentUser = user;
-    tokenExpiryTime = Date.now() + (expiresIn - 60) * 1000;
-    scheduleTokenRefresh();
-    window.dispatchEvent(new CustomEvent('xaytheon:authchange', { detail: { user: currentUser } }));
-  }
+  accessToken = token;
+  currentUser = user || null;
+
+  // Store expiry timestamp (in ms)
+  tokenExpiryTime = Date.now() + (expiresIn * 1000);
+
+  scheduleTokenRefresh();
+
+  window.dispatchEvent(
+    new CustomEvent("xaytheon:authchange", { detail: { user: currentUser } })
+  );
+}
 
   async function getSession() {
     if (!accessToken) return null;
@@ -61,12 +73,6 @@
   function getAccessToken() {
     return accessToken;
   }
-
-  function isTokenExpiringSoon() {
-    if (!tokenExpiryTime) return true;
-    return Date.now() >= tokenExpiryTime;
-  }
-
   async function refreshAccessToken() {
     try {
       const storedRefreshToken = localStorage.getItem("x_refresh_token");
@@ -101,19 +107,19 @@
 
       return true;
     } catch (err) {
-      console.warn("Session restore failed:", err);
-      if (!err.message.includes("Network")) {
-        // If the token is definitely invalid (401 from backend), clear it.
-        // If it's a network error (server down), keep it to try again later.
-        if (err.message.includes("Invalid") || err.message.includes("expired") || err.message.includes("not found")) {
-          clearAccessToken();
-          renderAuthArea();
-          applyAuthGating();
-        }
-      }
-      return false;
-    }
-  }
+  console.warn("Session restore failed:", err);
+
+  // Clear all auth data (logout user safely)
+  clearAccessToken();
+
+  // Notify UI that user is logged out
+ /* window.dispatchEvent(
+    new CustomEvent("xaytheon:authchange", { detail: { user: null } })
+  );*/
+
+  return false;
+}
+
 
   function scheduleTokenRefresh() {
     if (refreshTimer) clearTimeout(refreshTimer);
@@ -129,12 +135,14 @@
   }
 
   async function authenticatedFetch(url, options = {}) {
-    if (isTokenExpiringSoon()) {
-      const refreshed = await refreshAccessToken();
-      if (!refreshed) {
-        throw new Error("Authentication required");
-      }
+     if (isTokenExpired()) {
+    const refreshed = await refreshAccessToken();
+    if (!refreshed) {
+      clearAccessToken();
+      throw { code: "SESSION_EXPIRED" };
     }
+  }
+
 
     const token = getAccessToken();
     if (!token) {
@@ -204,13 +212,7 @@
         }
 
         // Handle specific HTTP status codes
-        if (res.status === 429) {
-          throw new Error('Too many login attempts. Please wait before trying again.');
-        } else if (res.status === 401) {
-          throw new Error('Invalid email or password');
-        } else if (res.status >= 500) {
-          throw new Error('Server error. Please try again later.');
-        }
+        
 
         throw new Error(errorMessage);
       }
@@ -407,3 +409,29 @@
     // Tokens cleared automatically on page close
   });
 })();
+
+function getAuthErrorMessage(error) {
+  if (!error) {
+    return "Something went wrong. Please try again.";
+  }
+
+  // Network error
+  if (error.message === "Failed to fetch") {
+    return "Network error. Please check your internet connection.";
+  }
+
+  // Custom error codes
+  switch (error.code) {
+    case "INVALID_CREDENTIALS":
+      return "Invalid email or password.";
+    case "USER_EXISTS":
+      return "User already exists. Please log in.";
+    case "UNAUTHORIZED":
+      return "You are not authorized. Please login again.";
+    case "SESSION_EXPIRED":
+      return "Your session has expired. Please login again.";
+    default:
+      return error.message || "Authentication failed.";
+  }
+}
+
