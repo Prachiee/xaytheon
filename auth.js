@@ -1,29 +1,30 @@
 (function () {
   const API_BASE_URL =
-    window.location.protocol === "https:"
-      ? "https://your-api-domain.com/api/auth"
-      : "http://localhost:5000/api/auth";
+  window.location.protocol === "https:"
+    ? "https://your-api-domain.com/api/auth"
+    : "http://localhost:5000/api/auth";
+
 
   const REQUEST_TIMEOUT = 30000;
 
   async function fetchWithTimeout(url, options = {}, timeout = REQUEST_TIMEOUT) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
+try {
+  const response = await fetch(resource, {
+    ...options,
+    signal: controller.signal,
+  });
+  clearTimeout(timeoutId);
+  return response;
+} catch (err) {
+  clearTimeout(timeoutId);
+  if (err.name === "AbortError") {
+    throw { code: "TIMEOUT" };
+  }
+  throw err;
+}
 
-    try {
-      const response = await fetch(url, {
-        ...options,
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-      return response;
-    } catch (err) {
-      clearTimeout(timeoutId);
-      if (err.name === "AbortError") {
-        throw { code: "TIMEOUT" };
-      }
-      throw err;
-    }
   }
 
   let accessToken = null;
@@ -183,14 +184,13 @@
     window.location.reload();
   }
 
-  window.XAYTHEON_AUTH = {
-    login,
-    register,
-    logout,
-    authenticatedFetch,
-    isAuthenticated: () => !!accessToken,
-  };
-})();
+ window.XAYTHEON_AUTH = {
+  login,
+  register,
+  logout,
+  authenticatedFetch,
+  isAuthenticated: () => !!accessToken,
+};
 
 /* =========================
    CENTRALIZED ERROR HANDLER
