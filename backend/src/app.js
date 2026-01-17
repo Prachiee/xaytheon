@@ -8,7 +8,18 @@ const requestLock = require("./middleware/requestLock.middleware");
 
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
-const { handleValidationError } = require("./utils/validation");
+const watchlistRoutes = require("./routes/watchlist.routes");
+const notificationRoutes = require("./routes/notification.routes");
+const analyticsRoutes = require("./routes/analytics.routes");
+const achievementsRoutes = require("./routes/achievements.routes");
+const pushRoutes = require("./routes/push.routes");
+const compareRoutes = require("./routes/compare.routes");
+const collabRoutes = require("./routes/collab.routes");
+const heatmapRoutes = require("./routes/heatmap.routes");
+const sentimentRoutes = require("./routes/sentiment.routes");
+const workflowRoutes = require("./routes/workflow.routes");
+const dependencyRoutes = require("./routes/dependency.routes");
+const aiRoutes = require("./routes/ai.routes");
 
 const app = express();
 
@@ -90,22 +101,6 @@ app.use(cors(corsOptions));
 
 /* ========================
    BODY PARSING
-======================== */
-app.use(
-  express.json({
-    limit: "10mb",
-    verify: (req, res, buf) => {
-      try {
-        JSON.parse(buf);
-      } catch {
-        res.status(400).json({ message: "Invalid JSON payload" });
-        throw new Error("Invalid JSON");
-      }
-    },
-  })
-);
-
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 
 /* ========================
@@ -126,8 +121,6 @@ app.use("/api/user", userRoutes);
 
 /* ========================
    ERROR HANDLING
-======================== */
-app.use(handleValidationError);
 
 app.use((err, req, res, next) => {
   console.error("Error:", err);
