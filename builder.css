@@ -1,6 +1,3 @@
-/* ============================= */
-/* Global Fixes */
-/* ============================= */
 
 :root {
     --navbar-height: 64px;
@@ -9,10 +6,6 @@
 body {
     padding-top: var(--navbar-height);
 }
-
-/* ============================= */
-/* Builder Container */
-/* ============================= */
 
 .builder-container {
     max-width: 1600px;
@@ -39,9 +32,6 @@ body {
     font-size: 0.95rem;
 }
 
-/* ============================= */
-/* Layout */
-/* ============================= */
 
 .builder-layout {
     display: grid;
@@ -50,9 +40,6 @@ body {
     height: calc(100vh - var(--navbar-height) - 140px);
 }
 
-/* ============================= */
-/* Step Library */
-/* ============================= */
 
 .step-library {
     background: var(--card-bg);
@@ -117,9 +104,6 @@ body {
     color: var(--accent-color);
 }
 
-/* ============================= */
-/* Canvas Area */
-/* ============================= */
 
 .canvas-area {
     background: linear-gradient(
@@ -172,10 +156,6 @@ body {
     border-radius: 6px;
 }
 
-/* ============================= */
-/* Validation Pill */
-/* ============================= */
-
 .pill {
     padding: 5px 12px;
     border-radius: 20px;
@@ -194,10 +174,6 @@ body {
     background: rgba(239, 68, 68, 0.2);
     color: #ef4444;
 }
-
-/* ============================= */
-/* Workflow Canvas */
-/* ============================= */
 
 .workflow-canvas {
     flex: 1;
@@ -232,9 +208,6 @@ body {
     opacity: 0.3;
 }
 
-/* ============================= */
-/* Step Block */
-/* ============================= */
 
 .step-block {
     width: 100%;
@@ -331,10 +304,6 @@ body {
     border-radius: 2px;
 }
 
-/* ============================= */
-/* Code Preview */
-/* ============================= */
-
 .code-preview-area {
     background: #0d1117;
     border: 1px solid var(--border-color);
@@ -368,10 +337,6 @@ body {
     overflow: auto;
     line-height: 1.5;
 }
-
-/* ============================= */
-/* Modal */
-/* ============================= */
 
 .modal {
     position: fixed;
@@ -422,9 +387,6 @@ body {
     gap: 10px;
 }
 
-/* ============================= */
-/* Responsive */
-/* ============================= */
 
 @media (max-width: 1200px) {
     .builder-layout {
