@@ -47,9 +47,7 @@
                     <p class="page-subtitle">Design your CI/CD pipelines without writing YAML.</p>
                 </div>
                 <div class="header-actions">
-                    <button id="export-yaml-btn" class="btn btn-outline">
-                        <i class="ri-file-code-line"></i> Export YAML
-                    </button>
+                    <button type="button" id="export-yaml-btn" class="btn btn-outline">Export YAML</button>
                     <button id="save-workflow-btn" class="btn btn-primary">
                         <i class="ri-save-line"></i> Save Template
                     </button>
@@ -61,14 +59,14 @@
                 <aside class="step-library">
                     <h3>Step Library</h3>
                     <div class="library-search">
-                        <input type="text" placeholder="Search steps...">
+                        <label for="step-search-input" class="sr-only">Search available workflow steps</label>
+                        <input id="step-search-input" type="search" placeholder="Search steps..." aria-label="Search steps by name or type">
                     </div>
                     <div class="steps-list">
                         <div class="step-category">
                             <h4>Standard</h4>
-                            <div class="draggable-step" draggable="true" data-type="uses"
-                                data-uses="actions/checkout@v4" data-name="Checkout Code">
-                                <i class="ri-git-branch-line"></i> Checkout Code
+                            <div class="draggable-step" role="button" tabindex="0"  aria-grabbed="false" data-type="uses" data-uses="actions/checkout@v4" data-name="Checkout Code">
+                            <i class="ri-git-branch-line"></i> Checkout Code
                             </div>
                             <div class="draggable-step" draggable="true" data-type="run" data-name="Run Shell Script">
                                 <i class="ri-terminal-box-line"></i> Shell Command
@@ -76,19 +74,19 @@
                         </div>
                         <div class="step-category">
                             <h4>Build & Test</h4>
-                            <div class="draggable-step" draggable="true" data-type="uses"
+                            <div class="draggable-step" role="button" tabindex="0" aria-grabbed="false" draggable="true" data-type="uses"
                                 data-uses="actions/setup-node@v4" data-name="Setup Node.js">
                                 <i class="ri-nodejs-line"></i> Setup Node.js
                             </div>
-                            <div class="draggable-step" draggable="true" data-type="uses"
+                            <div class="draggable-step" role="button" tabindex="0" aria-grabbed="false" draggable="true" data-type="uses"
                                 data-uses="actions/setup-python@v5" data-name="Setup Python">
                                 <i class="ri-python-line"></i> Setup Python
                             </div>
-                            <div class="draggable-step" draggable="true" data-type="run" data-name="Install Deps"
+                            <div class="draggable-step" role="button" tabindex="0" aria-grabbed="false" draggable="true" data-type="run" data-name="Install Deps"
                                 data-run="npm ci">
                                 <i class="ri-install-line"></i> Install Deps
                             </div>
-                            <div class="draggable-step" draggable="true" data-type="run" data-name="Run Tests"
+                            <div class="draggable-step" role="button" tabindex="0" aria-grabbed="false" draggable="true" data-type="run" data-name="Run Tests"
                                 data-run="npm test">
                                 <i class="ri-test-tube-line"></i> Run Tests
                             </div>
@@ -118,7 +116,7 @@
                                 <option value="schedule">Trigger: Schedule</option>
                             </select>
                         </div>
-                        <div id="validation-pill" class="pill valid">Valid</div>
+                        <div id="validation-pill" class="pill valid" aria-live="polite">Valid</div>
                     </div>
 
                     <div id="workflow-canvas" class="workflow-canvas">
@@ -223,9 +221,9 @@
     </div>
 
     <!-- Edit Step Modal -->
-    <div id="edit-modal" class="modal hidden">
+    <div id="edit-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
         <div class="modal-content">
-            <h3>Edit Step</h3>
+            <h3 id="edit-modal-title">Edit Step</h3>
             <div class="form-group">
                 <label>Step Name</label>
                 <input type="text" id="edit-step-name">
@@ -239,8 +237,8 @@
                 <textarea id="edit-step-run"></textarea>
             </div>
             <div class="modal-actions">
-                <button id="cancel-edit" class="btn btn-outline">Cancel</button>
-                <button id="save-edit" class="btn btn-primary">Save Changes</button>
+                <button type="button" id="cancel-edit" class="btn btn-outline">Cancel</button>
+                <button type="button" id="save-edit" class="btn btn-primary">Save Changes</button>
             </div>
         </div>
     </div>
