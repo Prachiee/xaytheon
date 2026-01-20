@@ -48,22 +48,37 @@
                 </a>
 
                 <ul class="nav-menu">
+                    <!-- Visible items -->
                     <li><a class="nav-link" href="github.html">GitHub Dashboard</a></li>
-                    <li><a class="nav-link" href="health.html">Health Monitor</a></li>
-                    <li><a class="nav-link" href="risk-detector.html">Risk Detector</a></li>
                     <li><a class="nav-link" href="analytics.html">Analytics</a></li>
                     <li><a class="nav-link" href="ai-chat.html">AI Assistant</a></li>
                     <li><a class="nav-link" href="heatmap.html">Activity Map</a></li>
                     <li><a class="nav-link" href="dependency-graph.html">Dep Graph</a></li>
                     <li><a class="nav-link" href="workflow-builder.html">Workflow Builder</a></li>
-                    <li><a class="nav-link" href="sentiment.html">Sentiment</a></li>
-                    <li><a class="nav-link" href="watchlist.html" data-i18n="nav.watchlist">Watchlist</a></li>
-                    <li><a class="nav-link" href="compare.html">Compare</a></li>
-                    <li><a class="nav-link" href="achievements.html">Achievements</a></li>
-                    <li><a class="nav-link" href="community.html">Community Highlights</a></li>
-                    <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
-                    <li><a class="nav-link" href="contributions.html">Contributions</a></li>
-                                        <li><a class="nav-link" href="fleet.html">Fleet Dashboard</a></li>
+                
+                
+                    <!-- More dropdown -->
+                    <li class="nav-more">
+                        <button class="nav-link more-toggle" aria-haspopup="true" aria-expanded="false">
+                            More ▾
+                        </button>
+                        <ul class="more-menu">
+                            <li><a class="nav-link" href="sentiment.html">Sentiment</a></li>
+                            <li><a class="nav-link" href="watchlist.html">Watchlist</a></li>
+                            <li><a class="nav-link" href="compare.html">Compare</a></li>
+                            <li><a class="nav-link" href="achievements.html">Achievements</a></li>
+                            <li><a class="nav-link" href="community.html">Community Highlights</a></li>
+                            <li><a class="nav-link" href="health.html">Health Auditor</a></li>
+                            <li><a class="nav-link" href="explore.html">Explore by Topic</a></li>
+                            <li><a class="nav-link" href="contributions.html">Contributions</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-auth">
+                        <a href="login.html" class="btn-signin">Sign In</a>
+                    </li>
+                
+                
+                    <!-- Theme toggle & auth -->
                     <li>
                         <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
                             <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -82,6 +97,7 @@
                     </li>
                     <li id="auth-area"></li>
                 </ul>
+
 
                 <i class="ri-menu-2-line menu-icon"></i>
                 <i class="ri-close-large-fill menu-close-icon"></i>

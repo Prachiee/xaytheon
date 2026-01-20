@@ -1387,6 +1387,80 @@ body.dark #scrollTopBtn:hover {
   animation: fadeIn 0.8s ease-out 0.2s both;
 }
 
+.nav-more {
+  position: relative;
+}
+
+
+.more-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+
+.more-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--bg, #fff);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  padding: 8px 0;
+  min-width: 220px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 1000;
+}
+
+
+.more-menu li {
+  list-style: none;
+}
+
+
+.more-menu .nav-link {
+  display: block;
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+
+.more-menu .nav-link:hover {
+  background: rgba(99,102,241,0.1);
+}
+
+
+/* Show dropdown on hover (desktop) */
+.nav-more:hover .more-menu {
+  display: block;
+}
+
+
+.btn-signin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;   /* 🔥 This prevents line breaks */
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  border: 2px solid #000;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  min-width: 80px;       /* ensures enough width */
+}
+
+
+.btn-signin:hover {
+  background: #000;
+  color: #fff;
+}
+
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 0.8; }
