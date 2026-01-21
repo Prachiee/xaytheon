@@ -217,9 +217,9 @@
   <script defer src="auth.js"></script>
   <script defer src="i18n.js"></script>
   <script>
-    const theme = localStorage.getItem("theme")
-    if (theme) {
-      document.documentElement.setAttribute("data-theme", theme)
+    const them = localStorage.getItem("theme")
+    if (them) {
+      document.documentElement.setAttribute("data-theme", them)
     }
   </script>
 
@@ -583,6 +583,7 @@
 
     .card-body {
       padding: 24px;
+    }
     .github-grid {
       display: flex;
       flex-direction: row;
