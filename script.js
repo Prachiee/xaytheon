@@ -1588,9 +1588,17 @@ function renderRepos(repos) {
         html_url: r.html_url
       }).replace(/"/g, "&quot;");
 
+      const isFavorited = window.favoritesManager && window.favoritesManager.isFavorited(r.id);
+      const starIcon = isFavorited ? '⭐' : '☆';
+
       return `
         <div class="repo-item">
-            <div class="repo-name"><a href="${r.html_url}" target="_blank" rel="noopener" onclick='trackRepoView(${safeRepo})'>${escapeHtml(r.full_name)}</a></div>
+            <div class="repo-name">
+              <a href="${r.html_url}" target="_blank" rel="noopener" onclick='trackRepoView(${safeRepo})'>${escapeHtml(r.full_name)}</a>
+              <button class="favorite-btn" data-repo-id="${r.id}" title="${isFavorited ? 'Remove from favorites' : 'Add to favorites'}" style="background:none;border:none;font-size:18px;cursor:pointer;margin-left:8px;vertical-align:middle;">
+                ${starIcon}
+              </button>
+            </div>
             ${r.description ? `<div class="repo-desc">${escapeHtml(r.description)}</div>` : ""}
             <div class="repo-meta">
                 <span>★ ${r.stargazers_count || 0}</span>
@@ -1603,6 +1611,39 @@ function renderRepos(repos) {
     `;
     })
     .join("");
+
+  // Add event listeners to favorite buttons
+  if (window.favoritesManager) {
+    document.querySelectorAll('.favorite-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const repoId = btn.getAttribute('data-repo-id');
+        const repo = repos.find(r => r.id == repoId);
+        
+        if (!repo) return;
+
+        if (window.favoritesManager.isFavorited(repo.id)) {
+          window.favoritesManager.removeFavorite(repo.id);
+          btn.textContent = '☆';
+          btn.title = 'Add to favorites';
+        } else {
+          window.favoritesManager.addFavorite({
+            id: repo.id,
+            name: repo.name,
+            owner: repo.owner?.login || 'Unknown',
+            url: repo.html_url,
+            description: repo.description,
+            stars: repo.stargazers_count,
+            language: repo.language
+          });
+          btn.textContent = '⭐';
+          btn.title = 'Remove from favorites';
+        }
+      });
+    });
+  }
 }
 
 function renderActivity(events) {
