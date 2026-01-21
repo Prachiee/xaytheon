@@ -9,6 +9,8 @@
     <title>Watchlist — XAYTHEON</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css" />
+     <link rel="stylesheet" href="style.css?v=3">
+
      <script src="theme.js"></script>
     <link rel="stylesheet" href="watchlist.css" />
 
@@ -229,6 +231,18 @@
     
     <!-- Watchlist-specific script -->
     <script src="watchlist.js"></script>
+    <script>
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('navbar-placeholder').innerHTML = data;
+
+            // Optional: Re-run JS for menu toggle & theme switch after navbar is loaded
+            if (typeof initNavbar === "function") initNavbar();
+        })
+        .catch(error => console.error('Error loading navbar:', error));
+</script>
+
 </body>
 
 </html>

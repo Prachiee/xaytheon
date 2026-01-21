@@ -10,6 +10,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="analytics.css" />
+  <link rel="stylesheet" href="style.css?v=3">
   <link rel="stylesheet" href="features_analytics.css" />
   <link rel="stylesheet" href="modal-fix.css?v=1" />
   <script src="theme.js"></script>
@@ -31,6 +32,7 @@
 
 <body class="eightgon-page">
   <div class="page-wrapper">
+    <div id="navbar-placeholder"></div>
 
     <div id="header-placeholder"></div>
 
@@ -327,6 +329,18 @@
   <script src="offline-manager.js"></script>
   <!-- Analytics-specific script -->
   <script src="analytics.js"></script>
+  <script>
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('navbar-placeholder').innerHTML = data;
+
+            // Optional: Re-run JS for menu toggle & theme switch after navbar is loaded
+            if (typeof initNavbar === "function") initNavbar();
+        })
+        .catch(error => console.error('Error loading navbar:', error));
+</script>
+
 </body>
 
 </html>

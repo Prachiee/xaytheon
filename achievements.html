@@ -9,8 +9,13 @@
     <title>Achievements & Leaderboard — XAYTHEON</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css" />
+     <link rel="stylesheet" href="style.css?v=3">
     <link rel="stylesheet" href="achievements.css" />
     <script src="theme.js"></script>
+    
+    <script defer src="auth.js"></script>
+    <script defer src="i18n.js"></script>
+    <script defer src="pwa.js"></script>
 
     <!-- Supabase SDK & auth bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
@@ -171,6 +176,18 @@
     <script src="script.js"></script>
     <!-- Achievements-specific script -->
     <script src="achievements.js"></script>
+    <script>
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('navbar-placeholder').innerHTML = data;
+
+            // Optional: Re-run JS for menu toggle & theme switch after navbar is loaded
+            if (typeof initNavbar === "function") initNavbar();
+        })
+        .catch(error => console.error('Error loading navbar:', error));
+</script>
+
 </body>
 
 </html>
