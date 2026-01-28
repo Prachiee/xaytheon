@@ -24,7 +24,10 @@ const dependencyRoutes = require("./routes/dependency.routes");
 const aiRoutes = require("./routes/ai.routes");
 const riskRoutes = require("./routes/risk.routes");
 const analyzerRoutes = require("./routes/analyzer.routes");
-const codeDNARoutes = require("./routes/code-dna.routes");
+const releaseRoutes = require("./routes/release.routes");
+const warRoomRoutes = require("./routes/war-room.routes");
+const securityFuzzerRoutes = require("./routes/security-fuzzer.routes");
+const codeDnaRoutes = require("./routes/code-dna.routes");
 
 const app = express();
 
