@@ -631,8 +631,8 @@ a:hover {
 
 .github-header {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   gap: 20px;
   position: relative;
   /* anchor for floating 3D */
