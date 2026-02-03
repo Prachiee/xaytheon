@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Travel Debugger — XAYTHEON</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="time-travel.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+
+<body class="dark-theme">
+    <div id="header-placeholder"></div>
+
+    <main class="time-travel-container">
+        <!-- 4D Viewport -->
+        <div id="archaeology-viewport"></div>
+
+        <!-- HUD Controls -->
+        <div class="hud-overlay">
+            <div class="top-bar glass">
+                <div class="timeline-slider-container">
+                    <button class="control-btn" onclick="playTimeline()"><i class="ri-play-fill"></i></button>
+                    <button class="control-btn" onclick="pauseTimeline()"><i class="ri-pause-fill"></i></button>
+                    <input type="range" id="timeline-slider" min="0" max="100" value="0" class="slider">
+                    <span id="current-date" class="date-display">Select Commit</span>
+                </div>
+            </div>
+
+            <div class="side-panel glass">
+                <h3><i class="ri-history-line"></i> Code Archaeology</h3>
+
+                <div class="info-card" id="commit-info">
+                    <h4>Current State</h4>
+                    <p class="commit-msg">Use slider to travel...</p>
+                    <div class="commit-meta">
+                        <span id="commit-author">---</span>
+                        <span id="commit-hash">---</span>
+                    </div>
+                </div>
+
+                <div class="blame-card">
+                    <h4>🔥 Fragility Hotspots</h4>
+                    <ul id="hotspot-list" class="hotspot-list">
+                        <!-- Filled by JS -->
+                    </ul>
+                </div>
+
+                <div class="action-panel">
+                    <button class="btn btn-accent full-width" onclick="findBugGenesis()">
+                        <i class="ri-search-line"></i> Trace Bug Genesis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="boilerplate/boilerplate-loader.js"></script>
+    <script src="time-travel.js"></script>
+</body>
+
+</html>
