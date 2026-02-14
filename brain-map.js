@@ -188,16 +188,43 @@ class SemanticBrain {
     onNodeClick() {
         if (!this.hoveredNode) return;
 
+        // Clear previous intent lines if clicking a node (manual focus)
+        this.intentLines.forEach(l => this.scene.remove(l));
+        this.intentLines = [];
+
         const sidebar = document.getElementById('info-sidebar');
         sidebar.classList.add('active');
 
+        // Find a "Twin" node (Cross-lingual mapping demo)
+        const twin = this.nodes.find(n => n.cluster.id === this.hoveredNode.cluster.id && n.lang !== this.hoveredNode.lang);
+
+        if (twin) {
+            const material = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, dashSize: 3, gapSize: 1 });
+            const points = [this.hoveredNode.position, twin.position];
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const line = new THREE.Line(geometry, material);
+            this.scene.add(line);
+            this.intentLines.push(line);
+
+            // Text for twin
+            document.getElementById('node-description').innerHTML = `
+                Semantic cluster detected: <strong>${this.hoveredNode.cluster.name}</strong>.<br><br>
+                <div style="color:var(--nebula-blue); border-left: 2px solid; padding-left: 8px; margin-bottom: 8px;">
+                    <strong>CROSS-LINGUAL TWIN DETECTED</strong><br>
+                    Identical logic found in ${twin.lang} module. Semantic identity: 99.4%
+                </div>
+                This module contains logic for ${this.hoveredNode.cluster.name.toLowerCase()}.
+            `;
+        } else {
+            document.getElementById('node-description').innerHTML = `
+                Semantic cluster detected: <strong>${this.hoveredNode.cluster.name}</strong>.<br><br>
+                This module contains logic for ${this.hoveredNode.cluster.name.toLowerCase()}. 
+                Cross-lingual analysis suggests high identity matching with patterns in 
+                ${this.hoveredNode.lang === 'JavaScript' ? 'TypeScript' : 'JavaScript'} backend services.
+            `;
+        }
+
         document.getElementById('node-title').textContent = this.hoveredNode.name;
-        document.getElementById('node-description').innerHTML = `
-            Semantic cluster detected: <strong>${this.hoveredNode.cluster.name}</strong>.<br><br>
-            This module contains logic for ${this.hoveredNode.cluster.name.toLowerCase()}. 
-            Cross-lingual analysis suggests high identity matching with patterns in 
-            ${this.hoveredNode.lang === 'JavaScript' ? 'TypeScript' : 'JavaScript'} backend services.
-        `;
 
         const tags = [this.hoveredNode.lang, 'Async', 'Semantic Match', this.hoveredNode.cluster.id];
         document.getElementById('node-tags').innerHTML = tags.map(t => `<span class="tag">${t}</span>`).join('');

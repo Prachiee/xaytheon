@@ -234,28 +234,37 @@ class TracePulse3D {
         this.flameGroup = new THREE.Group();
         const data = node.userData;
 
-        // Mock layers for flame graph
+        // Mock layers for flame graph (Fire palette)
         const layers = [
-            { name: 'Kernel', width: 20, color: 0x450a0a },
-            { name: 'Runtime', width: 18, color: 0x7f1d1d },
-            { name: 'Middleware', width: 15, color: 0xb91c1c },
-            { name: 'Logic', width: 12, color: 0xef4444 },
-            { name: 'Wait', width: 8, color: data.latency > 300 ? 0xf87171 : 0x1e3a8a }
+            { name: 'Kernel', width: 22, color: 0x450a0a },
+            { name: 'Runtime', width: 19, color: 0x991b1b },
+            { name: 'Middleware', width: 16, color: 0xd97706 },
+            { name: 'Logic', width: 12, color: 0xfacc15 },
+            { name: 'Wait', width: 8, color: data.latency > 300 ? 0xffffff : 0x3b82f6 }
         ];
 
         layers.forEach((l, i) => {
-            const geometry = new THREE.BoxGeometry(l.width, 2, 2);
+            const geometry = new THREE.BoxGeometry(l.width, 1.8, 1.8);
             const material = new THREE.MeshPhongMaterial({
                 color: l.color,
                 transparent: true,
-                opacity: 0.8,
+                opacity: 0.9,
                 emissive: l.color,
-                emissiveIntensity: 0.5
+                emissiveIntensity: 0.4
             });
             const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.y = i * 2.5 + 10;
-            mesh.position.x = (20 - l.width) / 2; // Align left
+            mesh.position.y = i * 2.2 + 8;
+            mesh.position.x = (22 - l.width) / 2;
             this.flameGroup.add(mesh);
+
+            // Suble flicker animation
+            gsap.to(mesh.position, {
+                y: mesh.position.y + 0.5,
+                duration: 0.5 + Math.random(),
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
         });
 
         this.flameGroup.position.copy(node.position);
