@@ -533,27 +533,41 @@
 
   <!-- Inline JS -->
   <script>
-    const toggleBtn = document.querySelector(".toggle-password");
-    const passwordInput = document.getElementById("login-password");
-    const eyeIcon = document.getElementById("eye-icon");
+document.addEventListener("DOMContentLoaded", function () {
 
-    toggleBtn.addEventListener("click", function () {
-      const isHidden = passwordInput.type === "password";
+  const toggleBtn = document.querySelector(".toggle-password");
+  const passwordInput = document.getElementById("login-password");
+  const eyeIcon = document.getElementById("eye-icon");
 
-      passwordInput.type = isHidden ? "text" : "password";
+  // Safety check
+  if (!toggleBtn || !passwordInput || !eyeIcon) {
+    console.warn("Password toggle elements not found.");
+    return;
+  }
 
-      eyeIcon.src = isHidden
-        ? "https://img.icons8.com/?size=100&id=7840&format=png&color=000000"
-        : "https://img.icons8.com/?size=100&id=59814&format=png&color=000000";
+  toggleBtn.addEventListener("click", function () {
+    const isHidden = passwordInput.type === "password";
 
-      eyeIcon.alt = isHidden ? "Hide password" : "Show password";
-      toggleBtn.setAttribute("aria-pressed", isHidden);
-      toggleBtn.setAttribute(
-        "aria-label",
-        isHidden ? "Hide password" : "Show password"
-      );
-    });
-  </script>
+    // Toggle input type
+    passwordInput.type = isHidden ? "text" : "password";
+
+    // Toggle icon image
+    eyeIcon.src = isHidden
+      ? "https://img.icons8.com/?size=100&id=7840&format=png&color=000000"
+      : "https://img.icons8.com/?size=100&id=59814&format=png&color=000000";
+
+    // Accessibility improvements
+    eyeIcon.alt = isHidden ? "Hide password" : "Show password";
+    toggleBtn.setAttribute("aria-pressed", isHidden);
+    toggleBtn.setAttribute(
+      "aria-label",
+      isHidden ? "Hide password" : "Show password"
+    );
+  });
+
+});
+</script>
+
 
 
   <script src="auth.js"></script>
@@ -699,5 +713,5 @@
   </script>
   <script src="theme.js"></script>
 <div id="footer-placeholder"></div>
-
+</body>
 </html>
