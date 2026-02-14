@@ -215,5 +215,12 @@
             "bottleneck": "Critical Bottleneck Detected",
             "optimization": "AI Optimization Opportunity"
         }
+    },
+    "brain": {
+        "title": "Semantic Knowledge Brain",
+        "searchPlaceholder": "Enter code intent (e.g., 'How to encrypt passwords?')",
+        "mapIntent": "MAP INTENT",
+        "nodeIdx": "nodes indexed",
+        "goalPath": "GOAL PATH DETECTED"
     }
 }
