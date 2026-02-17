@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Collaboration Workspace — XAYTHEON</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=3">
+    <!-- Supabase SDK & Auth -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.44.4/dist/umd/supabase.min.js"></script>
+    <script defer src="auth.js"></script>
+    <script defer src="i18n.js"></script>
+
+    <!-- Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        /* =========================
+   CONTACT PAGE LAYOUT
+========================= */
+
+.contact-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+  color: var(--text-primary);
+}
+
+/* =========================
+   HERO
+========================= */
+
+.contact-hero {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.contact-hero h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+
+.contact-tagline {
+  color: var(--text-tertiary);
+  max-width: 480px;
+  margin: 0 auto;
+  font-size: 0.95rem;
+}
+
+/* =========================
+   INFO SECTIONS
+========================= */
+
+.contact-about,
+.contact-features {
+  max-width: 720px;
+  margin: 0 auto 3.5rem;
+}
+
+.contact-about h2,
+.contact-features h2 {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.contact-about p,
+.contact-features p {
+  color: var(--text-tertiary);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+}
+
+/* Feature list */
+
+.contact-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0 1.5rem;
+}
+
+.contact-features li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.6rem;
+  color: var(--text-secondary);
+}
+
+.contact-features li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--accent-blue);
+}
+
+.contact-features-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* =========================
+   CONTACT CONTAINER
+========================= */
+
+.contact-container {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.contact-form {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+}
+
+.contact-form h2 {
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.75rem;
+}
+
+.contact-form-intro {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.contact-form input,
+.contact-form textarea {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.7rem 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  transition: border 0.15s ease, box-shadow 0.15s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px var(--accent-blue-glow);
+}
+
+/* Submit */
+
+.contact-submit {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: var(--accent-blue);
+  color: #fff;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.contact-submit:hover {
+  background: var(--link-hover);
+  box-shadow: 0 4px 20px var(--accent-blue-glow);
+}
+
+/* =========================
+   CONTACT INFO
+========================= */
+
+.contact-info {
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.contact-info h2 {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.25rem;
+}
+
+.contact-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contact-info li {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.9rem;
+}
+
+.contact-info span {
+  min-width: 60px;
+  color: var(--text-muted);
+}
+
+.contact-info a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.contact-info a:hover {
+  color: var(--link-hover);
+}
+
+.contact-info-note {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .contact-container {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-info {
+    order: -1;
+  }
+}
+
+    </style>
+</head>
+
+<body class="eightgon-page">
+    <div class="page-wrapper">
+        <div id="header-placeholder"></div>
+          <main class="contact-page">
+
+    <!-- HERO -->
+    <section class="contact-hero">
+        <h1>CONTACT</h1>
+        <p class="contact-tagline">
+            Questions, ideas, or feedback? Open a channel.
+        </p>
+    </section>
+
+    <!-- CONTEXT -->
+    <section class="contact-about">
+        <h2>REACHING XAYTHEON</h2>
+        <p>
+            Xaytheon is an evolving platform focused on GitHub analytics, open-source discovery,
+            and developer insight. Communication with users and contributors is a core part of
+            how the platform grows.
+        </p>
+        <p>
+            Whether you’ve spotted an issue, have a feature idea, or want to collaborate,
+            this is the fastest way to reach us.
+        </p>
+    </section>
+
+    <!-- WHY CONTACT -->
+    <section class="contact-features">
+        <h2>WHEN TO CONTACT</h2>
+
+        <ul>
+            <li>
+                Feature requests or product feedback
+            </li>
+            <li>
+                Bug reports or data inconsistencies
+            </li>
+            <li>
+                Collaboration, research, or integration ideas
+            </li>
+            <li>
+                Questions about analytics, metrics, or roadmap direction
+            </li>
+        </ul>
+
+        <p class="contact-features-note">
+            Clear, technical messages help us respond faster.
+            Screenshots, links, and examples are always welcome.
+        </p>
+    </section>
+
+    <!-- CONTACT AREA -->
+    <section class="contact-container">
+
+        <!-- FORM -->
+        <form class="contact-form" id="contactForm">
+            <h2>SEND A MESSAGE</h2>
+
+            <p class="contact-form-intro">
+                Messages are reviewed directly by the Xaytheon team.
+                Expect a response when relevant or actionable.
+            </p>
+
+            <div class="form-group">
+                <label for="name">NAME</label>
+                <input type="text" id="name" name="name" placeholder="Your name or alias" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">EMAIL</label>
+                <input type="email" id="email" name="email" placeholder="you@domain.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="message">MESSAGE</label>
+                <textarea id="message" name="message" rows="5"
+                    placeholder="Describe your question, feedback, or proposal…"
+                    required></textarea>
+            </div>
+
+            <button type="submit" class="contact-submit">
+                SEND
+            </button>
+        </form>
+
+        <!-- OTHER CHANNELS -->
+        <div class="contact-info">
+            <h2>ALTERNATIVE CHANNELS</h2>
+
+            <ul>
+                <li>
+                    <span>Email</span>
+                    <a href="mailto:contact@xaytheon.com">contact@xaytheon.com</a>
+                </li>
+                <li>
+                    <span>GitHub</span>
+                    <a href="https://github.com/xaytheon" target="_blank">@xaytheon</a>
+                </li>
+                <li>
+                    <span>X</span>
+                    <a href="https://x.com/xaytheon" target="_blank">@xaytheon</a>
+                </li>
+            </ul>
+
+            <p class="contact-info-note">
+                For public discussions, issues, or code-related topics,
+                GitHub is preferred.
+            </p>
+        </div>
+
+    </section>
+
+</main>
+
+
+       
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script src="collab-cursors.js"></script>
+    <script src="boilerplate/boilerplate-loader.js"></script>
+
+</body>
+</html>
