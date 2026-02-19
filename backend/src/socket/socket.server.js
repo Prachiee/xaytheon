@@ -179,24 +179,6 @@ function initializeSocket(server) {
             });
         });
 
-<<<<<<< HEAD
-        // TRAFFIC OPS: Join traffic monitoring
-        socket.on("join_traffic_ops", () => {
-            socket.join("traffic_ops_room");
-            console.log(`📡 User ${socket.userId} joined Global Traffic Ops`);
-        });
-
-        // TRAFFIC OPS: Broadcast orchestration shift
-        socket.on("traffic_shift_broadcast", (event) => {
-            io.to("traffic_ops_room").emit("global_traffic_rerouted", {
-                ...event,
-                orchestratedBy: 'AI_AUTONOMOUS_ENGINE',
-                timestamp: Date.now()
-            });
-        });
-
-=======
->>>>>>> 436aa5c (feat(L3): implement AI-Driven Predictive Threat Detection & Integrated Security Fuzzer [SWoC26] Fixes #590)
         // Handle disconnect
         socket.on("disconnect", () => {
             console.log(`❌ User ${socket.userId} disconnected: ${socket.id}`);
