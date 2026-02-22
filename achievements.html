@@ -89,14 +89,14 @@
                     </div>
 
                     <!-- Tabs -->
-                    <div class="tabs">
-                        <button class="tab-btn active" data-tab="badges">🏅 Badges</button>
-                        <button class="tab-btn" data-tab="leaderboard">🏆 Leaderboard</button>
-                        <button class="tab-btn" data-tab="activity">📊 XP Activity</button>
+                    <div class="tabs" role="tablist">
+                        <button class="tab-btn active" data-tab="badges" role="tab" aria-selected="true">🏅 Badges</button>
+                        <button class="tab-btn" data-tab="leaderboard" role="tab" aria-selected="false">🏆 Leaderboard</button>
+                        <button class="tab-btn" data-tab="activity" role="tab" aria-selected="false">📊 XP Activity</button>
                     </div>
 
                     <!-- Badges Tab -->
-                    <div class="tab-content active" id="badges-tab">
+                    <div class="tab-content active" id="badges-tab" role="tabpanel">
                         <!-- Category Filters -->
                         <div class="category-filters">
                             <button class="filter-btn active" data-category="all">All</button>
@@ -115,7 +115,7 @@
                     </div>
 
                     <!-- Leaderboard Tab -->
-                    <div class="tab-content" id="leaderboard-tab">
+                    <div class="tab-content" id="leaderboard-tab" role="tabpanel">
                         <div class="leaderboard-container">
                             <div class="leaderboard-podium" id="leaderboard-podium">
                                 <!-- Top 3 will be populated here -->
@@ -127,7 +127,7 @@
                     </div>
 
                     <!-- Activity Tab -->
-                    <div class="tab-content" id="activity-tab">
+                    <div class="tab-content" id="activity-tab" role="tabpanel">
                         <div class="activity-list" id="activity-list">
                             <!-- XP activity will be populated here -->
                         </div>
@@ -153,7 +153,7 @@
     </div>
 
     <!-- Achievement Unlock Modal -->
-    <div id="unlock-modal" class="modal" style="display: none;">
+    <div id="unlock-modal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="unlock-badge-name">
         <div class="modal-content unlock-modal-content">
             <div class="unlock-animation">
                 <div class="unlock-badge" id="unlock-badge-icon">🏆</div>
@@ -178,4 +178,3 @@
 </body>
 
 </html>
-
