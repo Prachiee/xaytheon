@@ -179,6 +179,38 @@ function initializeSocket(server) {
             });
         });
 
+        // TRAFFIC OPS: Join traffic monitoring
+        socket.on("join_traffic_ops", () => {
+            socket.join("traffic_ops_room");
+            console.log(`📡 User ${socket.userId} joined Global Traffic Ops`);
+        });
+
+        // TRAFFIC OPS: Broadcast orchestration shift
+        socket.on("traffic_shift_broadcast", (event) => {
+            io.to("traffic_ops_room").emit("global_traffic_rerouted", {
+                ...event,
+                orchestratedBy: 'AI_AUTONOMOUS_ENGINE',
+                timestamp: Date.now()
+            });
+        });
+
+        // DEPENDENCY RISK: Join CVE propagation monitoring room
+        socket.on("join_cve_propagation", () => {
+            socket.join("cve_propagation_room");
+            console.log(`🔍 User ${socket.userId} joined CVE Propagation Monitor`);
+        });
+
+        // DEPENDENCY RISK: Broadcast new CVE propagation alert to all subscribers
+        // Emitted server-side when a new vulnerable package scan completes.
+        socket.on("cve_propagation_alert", (alertPayload) => {
+            io.to("cve_propagation_room").emit("cve_propagation_alert", {
+                ...alertPayload,
+                detectedAt: Date.now(),
+                source: 'PROPAGATION_ENGINE_v1'
+            });
+            console.log(`🚨 CVE propagation alert broadcast: ${alertPayload.vulnerablePackage}`);
+        });
+
         // Handle disconnect
         socket.on("disconnect", () => {
             console.log(`❌ User ${socket.userId} disconnected: ${socket.id}`);
