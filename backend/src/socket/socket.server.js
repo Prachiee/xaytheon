@@ -191,6 +191,35 @@ function initializeSocket(server) {
             });
         });
 
+        // ─── Issue #616: Burnout Detection ─────────────────────────────────
+        // Join the team burnout monitoring room
+        socket.on("join_burnout_monitor", ({ teamId }) => {
+            const room = `burnout_monitor:${teamId || 'global'}`;
+            socket.join(room);
+            console.log(`🧠 User ${socket.userId} joined Burnout Monitor (${room})`);
+        });
+
+        // Broadcast a burnout alert to all monitors for this team
+        socket.on("burnout_alert", ({ teamId, alert }) => {
+            const room = `burnout_monitor:${teamId || 'global'}`;
+            io.to(room).emit("burnout_alert", {
+                ...alert,
+                sentBy: socket.userId,
+                timestamp: Date.now()
+            });
+            console.log(`🚨 Burnout alert broadcast to ${room}:`, alert?.username);
+        });
+
+        // Broadcast rebalance proposal to team lead monitors
+        socket.on("rebalance_proposal", ({ teamId, proposal }) => {
+            const room = `burnout_monitor:${teamId || 'global'}`;
+            io.to(room).emit("rebalance_proposal", {
+                ...proposal,
+                proposedBy: 'BURNOUT_ENGINE',
+                timestamp: Date.now()
+            });
+        });
+
         // Handle disconnect
         socket.on("disconnect", () => {
             console.log(`❌ User ${socket.userId} disconnected: ${socket.id}`);

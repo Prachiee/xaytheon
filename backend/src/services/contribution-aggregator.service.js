@@ -77,7 +77,7 @@ class ContributionAggregatorService {
        INSIGHTS
     ===================================================== */
     calculateInsights({ contributions = {} }) {
-        const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const dayTotals = new Array(7).fill(0);
         const hourTotals = new Array(24).fill(0);
 
@@ -122,6 +122,65 @@ class ContributionAggregatorService {
             hourDistribution: hourTotals,
             intensityDistribution
         };
+    }
+
+    // ─── Issue #616: Burnout Detection — Rolling Load & Spike Detection ──────
+
+    /**
+     * Compute rolling 14-day load metrics for a contributor.
+     * Counts total contributions per day and rolls up to weekly
+     * load averages for overload comparison.
+     * @param {Object} contributions  - date -> count map from getContributionData
+     * @returns {Object} { rollingLoad14d, avgDailyLoad, peakDay, spikeDetected }
+     */
+    computeRollingLoadMetrics(contributions = {}) {
+        const today = new Date();
+        const dailyLoad = [];
+
+        for (let d = 13; d >= 0; d--) {
+            const day = new Date(today);
+            day.setDate(today.getDate() - d);
+            const key = day.toISOString().split('T')[0];
+            dailyLoad.push({ date: key, count: contributions[key] || 0 });
+        }
+
+        const total14d = dailyLoad.reduce((s, d) => s + d.count, 0);
+        const avgDailyLoad = parseFloat((total14d / 14).toFixed(2));
+        const peakEntry = dailyLoad.reduce((a, b) => b.count > a.count ? b : a, { count: 0, date: null });
+
+        // Spike: any day exceeding 2.5× the 14-day average
+        const spikeThreshold = avgDailyLoad * 2.5;
+        const spikeDays = dailyLoad.filter(d => d.count > spikeThreshold && d.count > 0);
+
+        return {
+            rollingLoad14d: dailyLoad,
+            total14d,
+            avgDailyLoad,
+            peakDay: peakEntry,
+            spikeDetected: spikeDays.length > 0,
+            spikeDays
+        };
+    }
+
+    /**
+     * Compute weekly load buckets over last 4 weeks.
+     * Used for xp-calculator overload signal detection.
+     * @param {Object} contributions
+     * @returns {Array<number>} weekly totals [week4_ago, week3_ago, week2_ago, last_week]
+     */
+    computeWeeklyLoadBuckets(contributions = {}) {
+        const today = new Date();
+        const buckets = [0, 0, 0, 0]; // 4 weeks, newest last
+
+        for (let d = 0; d < 28; d++) {
+            const day = new Date(today);
+            day.setDate(today.getDate() - d);
+            const key = day.toISOString().split('T')[0];
+            const weekIdx = 3 - Math.floor(d / 7);
+            buckets[weekIdx] += contributions[key] || 0;
+        }
+
+        return buckets;
     }
 }
 
