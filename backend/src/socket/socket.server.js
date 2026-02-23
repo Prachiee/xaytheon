@@ -16,6 +16,9 @@ function initializeSocket(server) {
         },
     });
 
+    // Initialize War-Room socket handler
+    // warRoomSocketHandler = new WarRoomSocket(io);
+
     // Authentication middleware for main namespace
     io.use((socket, next) => {
         const token = socket.handshake.auth.token;
